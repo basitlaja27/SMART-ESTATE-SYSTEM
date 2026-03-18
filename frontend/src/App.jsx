@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from 'sonner';
 import LandingPage from "./pages/LandingPage";
+import PaymentPage from "./pages/PaymentPage";
 import Login from "./pages/login";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -44,6 +45,12 @@ function App() {
         <Route path="/security" element={
           <ProtectedRoute>
             <SecurityDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/payment" element={
+          <ProtectedRoute>
+            <PaymentPage />
           </ProtectedRoute>
         } />
 

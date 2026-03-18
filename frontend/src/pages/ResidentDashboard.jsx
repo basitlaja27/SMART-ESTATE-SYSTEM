@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
 import "./dashboard.css";
 import {
@@ -20,6 +21,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 const ResidentDashboard = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [dues, setDues] = useState(0);
     const [activeSection, setActiveSection] = useState("dashboard");
@@ -312,7 +314,7 @@ const ResidentDashboard = () => {
                     >
                         <h2>Make Payments</h2>
                         <p>Total Outstanding: <span style={{ color: "var(--error-color)", fontWeight: "bold" }}>₦{dues}</span></p>
-                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ width: "100%" }}>Proceed to Pay</motion.button>
+                        <motion.button onClick={() => navigate("/payment", { state: { dues } })} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ width: "100%" }}>Proceed to Pay</motion.button>
                     </motion.div>
                 );
             case "qr":

@@ -82,7 +82,8 @@ const Chatbot = ({ isOpen, setIsOpen }) => {
             color: msg.sender === "user" ? "white" : "black",
             padding: "8px 12px",
             borderRadius: "12px",
-            maxWidth: "80%"
+            maxWidth: "80%",
+            whiteSpace: "pre-wrap"
           }}>
             {msg.text}
           </div>
