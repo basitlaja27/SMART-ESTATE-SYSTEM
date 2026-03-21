@@ -8,7 +8,7 @@ exports.lodgeComplaint = (req, res) => {
     }
 
     db.query(
-        "INSERT INTO complaints (user_id, title, description) VALUES (?, ?, ?)",
+        "INSERT INTO complaints (user_id, title, description, status) VALUES (?, ?, ?, 'open')",
         [userId, title, description],
         (err, result) => {
             if (err) return res.status(500).json(err);

@@ -17,6 +17,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
+const safeDate = (d) => { if (!d) return 'N/A'; try { const dt = new Date(d); return isNaN(dt) ? String(d) : dt.toLocaleString(); } catch (e) { return String(d); } };
+const safeStatus = (s) => String(s || 'open').toUpperCase();
+
 const AdminDashboard = () => {
     const [user, setUser] = useState({});
     const [users, setUsers] = useState([]);
@@ -194,7 +197,7 @@ const AdminDashboard = () => {
                             </motion.div>
                             <motion.div variants={itemVariants} className="card" style={{ borderTop: "4px solid #F56565" }}>
                                 <h4>Open Complaints</h4>
-                                <p style={{ fontSize: "2rem" }}>{complaints.filter(c => c.status === 'open').length}</p>
+                                <p style={{ fontSize: "2rem" }}>{complaints.filter(c => (c.status || 'open') === 'open').length}</p>
                             </motion.div>
                             <motion.div variants={itemVariants} className="card" style={{ borderTop: "4px solid #48BB78" }}>
                                 <h4>Total Revenue</h4>
@@ -257,21 +260,21 @@ const AdminDashboard = () => {
                         animate="visible"
                         style={{ display: "grid", gap: "10px" }}
                     >
-                        {complaints.map(c => (
-                            <motion.div variants={itemVariants} key={c.id} className="card" style={{ margin: 0 }}>
+                        {complaints.map((c, index) => (
+                            <div key={c.id || index} className="card" style={{ margin: "0 0 10px 0" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <strong>{c.title}</strong>
+                                    <strong>{String(c.title || 'Untitled')}</strong>
                                     <span style={{
-                                        color: c.status === 'open' ? '#EF4444' : '#10B981',
+                                        color: safeStatus(c.status) === 'OPEN' ? '#EF4444' : '#10B981',
                                         fontWeight: "600"
-                                    }}>{c.status.toUpperCase()}</span>
+                                    }}>{safeStatus(c.status)}</span>
                                 </div>
-                                <p style={{ color: "#4B5563", marginTop: "0.5rem" }}>{c.description}</p>
+                                <p style={{ color: "#4B5563", marginTop: "0.5rem" }}>{String(c.description || 'No Description')}</p>
                                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem", fontSize: "0.85rem", color: "#6B7280" }}>
-                                    <span>From: <strong>{c.user_name || `User #${c.user_id}`}</strong></span>
-                                    <span>{new Date(c.date).toLocaleString()}</span>
+                                    <span>From: <strong>{String(c.user_name || `User #${c.user_id}`)}</strong></span>
+                                    <span>{safeDate(c.date)}</span>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </motion.div>
                 );

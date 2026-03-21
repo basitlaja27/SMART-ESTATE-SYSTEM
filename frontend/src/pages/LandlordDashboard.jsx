@@ -19,6 +19,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
+const safeDate = (d) => { if (!d) return 'N/A'; try { const dt = new Date(d); return isNaN(dt) ? String(d) : dt.toLocaleDateString(); } catch (e) { return String(d); } };
+const safeStatus = (s) => String(s || 'open').toUpperCase();
+
 const LandlordDashboard = () => {
     const [user, setUser] = useState({});
     const [complaints, setComplaints] = useState([]);
@@ -208,25 +211,25 @@ const LandlordDashboard = () => {
                         <h2>Resident Complaints</h2>
                         {complaints.length === 0 ? <p>No active complaints.</p> : (
                             <div style={{ display: "grid", gap: "15px" }}>
-                                {complaints.map(c => (
-                                    <motion.div variants={itemVariants} key={c.id} className="card" style={{ margin: 0, padding: "1.5rem" }}>
+                                {complaints.map((c, index) => (
+                                    <div key={c.id || index} className="card" style={{ margin: 0, padding: "1.5rem" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                                             <div>
-                                                <h4 style={{ margin: "0 0 5px 0" }}>{c.title}</h4>
-                                                <p style={{ margin: "0 0 10px 0", color: "var(--text-secondary)" }}>{c.description}</p>
-                                                <small>From: <strong>{c.user_name || `Resident #${c.user_id}`}</strong> | Date: {new Date(c.date).toLocaleDateString()}</small>
+                                                <h4 style={{ margin: "0 0 5px 0" }}>{String(c.title || 'Untitled')}</h4>
+                                                <p style={{ margin: "0 0 10px 0", color: "var(--text-secondary)" }}>{String(c.description || 'No Description')}</p>
+                                                <small>From: <strong>{String(c.user_name || `Resident #${c.user_id}`)}</strong> | Date: {safeDate(c.date)}</small>
                                             </div>
                                             <span style={{
                                                 padding: "4px 8px",
                                                 borderRadius: "4px",
                                                 fontSize: "0.8rem",
-                                                backgroundColor: c.status === 'open' ? '#FED7D7' : '#C6F6D5',
-                                                color: c.status === 'open' ? '#C53030' : '#2F855A'
+                                                backgroundColor: safeStatus(c.status) === 'OPEN' ? '#FED7D7' : '#C6F6D5',
+                                                color: safeStatus(c.status) === 'OPEN' ? '#C53030' : '#2F855A'
                                             }}>
-                                                {c.status.toUpperCase()}
+                                                {safeStatus(c.status)}
                                             </span>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 ))}
                             </div>
                         )}
