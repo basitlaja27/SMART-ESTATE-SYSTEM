@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import "./login.css";
-import api from '../services/api'; // ✅ added
+import api from '../services/api';
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -26,8 +26,8 @@ const Login = () => {
     const endpoint = isRegistering ? "/api/auth/register" : "/api/auth/login";
 
     try {
-      const response = await api.post(endpoint, formData); // ✅ axios instead of fetch
-      const data = response.data;                          // ✅ already JSON, no parsing needed
+      const response = await api.post(endpoint, formData);
+      const data = response.data;
 
       if (isRegistering) {
         alert("Registration successful! Please login.");
@@ -36,7 +36,6 @@ const Login = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // Redirect based on role
         if (data.user.role === "admin") navigate("/admin");
         else if (data.user.role === "resident") navigate("/resident");
         else if (data.user.role === "landlord") navigate("/landlord");
@@ -54,7 +53,7 @@ const Login = () => {
         <ArrowLeft size={20} /> Back to Home
       </button>
       <div className="login-wrapper">
-        {/* Left Side - Branding */}
+
         <div className="login-branding">
           <div className="branding-content">
             <h1 className="branding-title">SmartEstate</h1>
@@ -76,7 +75,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Right Side - Form */}
         <div className="login-form-wrapper">
           <div className="login-form">
             <div className="form-header">
@@ -170,6 +168,7 @@ const Login = () => {
                 </a>
               </p>
             </div>
+
           </div>
         </div>
       </div>
