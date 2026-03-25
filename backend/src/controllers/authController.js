@@ -9,7 +9,7 @@ const register = async (req, res) => {
   if (!name || !email || !password) {
     return res.status(400).json({ message: "Name, email, and password are required" });
   }
-  const userRole = role  "resident";
+  const userRole = role || "resident";
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.query(
@@ -46,7 +46,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, role: user.role },
       secret,
-      { expiresIn: expiresIn  '1d' }
+      { expiresIn: expiresIn || '1d' }
     );
     res.json({ 
       message: "Login successful", 
