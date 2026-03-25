@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require('dotenv').config(); // Load environment variables
 
 const app = require("./src/app");
