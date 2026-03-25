@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import "./login.css";
+import api from '../services/api'; // ✅ added
 
 const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
-  // ... (keeping existing state) ...
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "resident", // Default role
+    role: "resident",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -20,31 +20,14 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    // ... (keeping existing logic) ...
     e.preventDefault();
     setError("");
+
     const endpoint = isRegistering ? "/api/auth/register" : "/api/auth/login";
-    // const url = `http://localhost:5000${endpoint}`; // Use proxy instead
-    const url = endpoint;
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const text = await response.text(); // Get raw text first
-      console.log("Server Response:", text); // Log it for debugging
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error("Server returned non-JSON response. Check console for details.");
-      }
-
-      if (!response.ok) throw new Error(data.message || "Something went wrong");
+      const response = await api.post(endpoint, formData); // ✅ axios instead of fetch
+      const data = response.data;                          // ✅ already JSON, no parsing needed
 
       if (isRegistering) {
         alert("Registration successful! Please login.");
@@ -61,7 +44,7 @@ const Login = () => {
         else navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message || "Server error. Please try again.");
     }
   };
 
@@ -175,7 +158,7 @@ const Login = () => {
             <div className="form-footer">
               <p>
                 {isRegistering ? "Already have an account?" : "New to SmartEstate?"}{" "}
-                <a
+                
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
