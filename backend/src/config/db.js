@@ -6,7 +6,12 @@ const db = mysql.createPool({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "smart_estate",
-  port: 3306
+  port: 3306,
+
+  ssl: {
+    rejectUnauthorized: false
+  },
+    connectTimeout: 20000
 });
 
 db.getConnection((err, connection) => {
