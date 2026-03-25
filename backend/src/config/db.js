@@ -7,7 +7,7 @@ const db = mysql.createPool({
     password: process.env.DB_PASSWORD || "1234",
     database: process.env.DB_NAME || "smart_estate",
     port: process.env.DB_PORT || 3306,
-    ssl: process.env.DB_HOST ? { rejectUnauthorized: true } : undefined
+    ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : undefined
 });
 
 // Test connection
