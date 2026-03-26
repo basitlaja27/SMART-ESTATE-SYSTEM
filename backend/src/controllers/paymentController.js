@@ -1,43 +1,57 @@
 const db = require("../config/db");
 
-exports.getAllPayments = (req, res) => {
-  db.query("SELECT * FROM payments", (err, results) => {
-    if (err) return res.status(500).json(err);
+exports.getAllPayments = async (req, res) => {
+  try {
+    const [results] = await db.query("SELECT * FROM payments");
     res.json(results);
-  });
+  } catch (err) {
+    console.error("Get payments error:", err);
+    res.status(500).json({ message: "Failed to fetch payments", error: err.message });
+  }
 };
 
-exports.getUserPayments = (req, res) => {
+exports.getUserPayments = async (req, res) => {
   const { userId } = req.params;
-  db.query("SELECT * FROM payments WHERE user_id = ?", [userId], (err, results) => {
-    if (err) return res.status(500).json(err);
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM payments WHERE user_id = ?",
+      [userId]
+    );
     res.json(results);
-  });
+  } catch (err) {
+    console.error("Get user payments error:", err);
+    res.status(500).json({ message: "Failed to fetch payments", error: err.message });
+  }
 };
 
-exports.createPayment = (req, res) => {
+exports.createPayment = async (req, res) => {
   const { userId, amount, description } = req.body;
-  db.query(
-    "INSERT INTO payments (user_id, amount, description, status) VALUES (?, ?, ?, 'completed')",
-    [userId, amount, description],
-    (err, result) => {
-      if (err) return res.status(500).json(err);
-      res.json({ message: "Payment successful", id: result.insertId });
-    }
-  );
+  try {
+    const [result] = await db.query(
+      "INSERT INTO payments (user_id, amount, description, status) VALUES (?, ?, ?, 'completed')",
+      [userId, amount, description]
+    );
+    res.json({ message: "Payment successful", id: result.insertId });
+  } catch (err) {
+    console.error("Create payment error:", err);
+    res.status(500).json({ message: "Payment failed", error: err.message });
+  }
 };
 
-exports.getDues = (req, res) => {
+exports.getDues = async (req, res) => {
   const { userId } = req.params;
-  // Mock logic: calculate dues. In real app, check 'payments' table pending items.
-  // For now, return a random or fixed amount if no pending payments found.
-  db.query("SELECT * FROM payments WHERE user_id = ? AND status = 'pending'", [userId], (err, results) => {
-    if (err) return res.status(500).json(err);
-
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM payments WHERE user_id = ? AND status = 'pending'",
+      [userId]
+    );
     let totalDues = 0;
     if (results.length > 0) {
       totalDues = results.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
     }
     res.json({ amount: totalDues });
-  });
+  } catch (err) {
+    console.error("Get dues error:", err);
+    res.status(500).json({ message: "Failed to fetch dues", error: err.message });
+  }
 };
